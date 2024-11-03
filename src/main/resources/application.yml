@@ -1,1 +1,8 @@
-spring.application.name=AssemblyVoteService
+spring:
+  application:
+    name: AssemblyVoteService
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health

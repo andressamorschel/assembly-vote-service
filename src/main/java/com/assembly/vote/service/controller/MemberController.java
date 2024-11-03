@@ -7,7 +7,6 @@ import com.assembly.vote.service.converter.MemberConverter;
 import com.assembly.vote.service.domain.Member;
 import com.assembly.vote.service.model.request.MemberRequest;
 import com.assembly.vote.service.service.MemberService;
-import com.assembly.vote.service.validator.MemberRequestValidator;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -31,8 +30,6 @@ public class MemberController {
 
     private final MemberConverter memberConverter;
 
-    private final MemberRequestValidator memberRequestValidator;
-
     @PostMapping
     @ResponseStatus(CREATED)
     public Member createMember(@RequestBody @Valid MemberRequest memberRequest) {
@@ -54,7 +51,6 @@ public class MemberController {
     @ResponseStatus(NO_CONTENT)
     public void deleteMember(@PathVariable String memberId) {
         log.info("Member deletion requested for: {}", memberId);
-        memberRequestValidator.validateMemberId(memberId);
         memberService.deleteMember(memberId);
     }
 }

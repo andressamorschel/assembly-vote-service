@@ -41,8 +41,4 @@ public class MemberService {
     public void deleteMember(String memberId) {
         memberRepository.deleteById(memberId);
     }
-
-    public boolean memberDoesNotExist(String memberId) {
-        return !memberRepository.existsById(memberId);
-    }
 }

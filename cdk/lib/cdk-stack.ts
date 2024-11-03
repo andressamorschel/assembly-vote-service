@@ -4,6 +4,8 @@ import * as ec2 from "aws-cdk-lib/aws-ec2";
 import * as ecs from "aws-cdk-lib/aws-ecs";
 import * as ecs_patterns from "aws-cdk-lib/aws-ecs-patterns";
 import * as ecr from "aws-cdk-lib/aws-ecr";
+import * as sqs from "aws-cdk-lib/aws-sqs";
+import * as iam from "aws-cdk-lib/aws-iam";
 
 export class AssemblyVoteServiceStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -34,6 +36,21 @@ export class AssemblyVoteServiceStack extends cdk.Stack {
     });
 
     mongo.addPortMappings({ containerPort: 27017, hostPort: 27017 });
+
+    const queue = new sqs.Queue(this, 'AssemblyVoteQueue', {
+      queueName: 'AssemblyVoteQueue',
+      visibilityTimeout: cdk.Duration.seconds(30),
+      retentionPeriod: cdk.Duration.days(1)
+    });
+
+    taskDefinition.taskRole.addToPrincipalPolicy(new iam.PolicyStatement({
+      actions: [
+        "sqs:SendMessage",
+        "sqs:GetQueueAttributes",
+        "sqs:GetQueueUrl"
+      ],
+      resources: [queue.queueArn]
+    }));
 
     new ecs_patterns.ApplicationLoadBalancedFargateService(this, 'AssemblyVoteFargateService', {
       serviceName: 'AssembyVoteService',

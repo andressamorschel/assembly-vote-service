@@ -24,10 +24,6 @@ public class MemberService {
         memberRepository.deleteById(memberId);
     }
 
-    public Member updateMember(Member member) {
-        return memberRepository.save(member);
-    }
-
     public boolean memberDoesNotExist(String memberId) {
         return !memberRepository.existsById(memberId);
     }

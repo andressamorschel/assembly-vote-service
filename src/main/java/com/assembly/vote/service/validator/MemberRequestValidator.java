@@ -11,7 +11,7 @@ public class MemberRequestValidator {
 
     private final MemberService memberService;
 
-    public void validateMemberRequest(String memberId) {
+    public void validateMemberId(String memberId) {
         if (memberService.memberDoesNotExist(memberId)) {
             throw new NotFoundException("not_found_member", memberId);
         }

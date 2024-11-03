@@ -10,6 +10,5 @@ public record Member(
         @Id
         String id,
         String name,
-        String cpf,
-        boolean deleted
+        String cpf
 ) {}

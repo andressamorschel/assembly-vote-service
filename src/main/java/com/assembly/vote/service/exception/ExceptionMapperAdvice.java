@@ -3,6 +3,7 @@ package com.assembly.vote.service.exception;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -33,15 +34,24 @@ public class ExceptionMapperAdvice {
     @ResponseStatus(NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
     public ResponseEntity<ErrorResponse> handleNotFoundExceptions(NotFoundException cause) {
-        var errorMessage = getMessage(cause);
+        var errorMessage = getMessage(cause.getError());
 
         var errorResponse = new ErrorResponse(NOT_FOUND.value(), errorMessage);
 
         return new ResponseEntity<>(errorResponse, NOT_FOUND);
     }
 
-    private String getMessage(NotFoundException cause) {
-        var error = cause.getError();
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> handle(HttpServletRequest request, BadRequestException cause) {
+        var errorMessage = getMessage(cause.getError());
+
+        var errorResponse = new ErrorResponse(BAD_REQUEST.value(), errorMessage);
+
+        return new ResponseEntity<>(errorResponse, BAD_REQUEST);
+    }
+
+    private String getMessage(ErrorMessage error) {
         return messageSource.getMessage(error.getMessageKey(), error.getArguments().toArray(new String[0]), Locale.getDefault());
     }
 }

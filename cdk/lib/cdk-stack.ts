@@ -25,7 +25,14 @@ export class AssemblyVoteServiceStack extends cdk.Stack {
     const assemblyVoteApp = taskDefinition.addContainer('AssemblyVoteApp', {
       image: ecs.ContainerImage.fromEcrRepository(repository, 'latest'),
       logging: ecs.LogDriver.awsLogs({ streamPrefix: 'assembly-vote-service' }),
-      memoryReservationMiB: 1024
+      memoryReservationMiB: 1024,
+      healthCheck: {
+        command: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"],
+        interval: cdk.Duration.seconds(30),
+        timeout: cdk.Duration.seconds(5),
+        retries: 3,
+        startPeriod: cdk.Duration.seconds(60),
+      }
     });
 
     assemblyVoteApp.addPortMappings({ containerPort: 8080, hostPort: 8080 });
@@ -57,20 +64,31 @@ export class AssemblyVoteServiceStack extends cdk.Stack {
       principals: [new iam.ArnPrincipal(taskDefinition.taskRole.roleArn)],
       actions: ["sqs:SendMessage"],
       resources: [queue.queueArn]
-    }));    
+    }));
 
     taskDefinition.taskRole.addToPrincipalPolicy(new iam.PolicyStatement({
       actions: ["ssm:GetParameter", "ssm:GetParametersByPath"],
       resources: [`arn:aws:ssm:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:parameter/config/AssemblyVoteService/*`]
     }));
 
-    new ecs_patterns.ApplicationLoadBalancedFargateService(this, 'AssemblyVoteFargateService', {
+    const fargateService = new ecs_patterns.ApplicationLoadBalancedFargateService(this, 'AssemblyVoteFargateService', {
       serviceName: 'AssembyVoteService',
       cluster: cluster,
       cpu: 512,
       desiredCount: 1,
       taskDefinition: taskDefinition,
       publicLoadBalancer: true
+    });
+
+    const scaling = fargateService.service.autoScaleTaskCount({
+      minCapacity: 1,
+      maxCapacity: 5,
+    });
+
+    scaling.scaleOnCpuUtilization('CpuScaling', {
+      targetUtilizationPercent: 80,
+      scaleInCooldown: cdk.Duration.seconds(60),
+      scaleOutCooldown: cdk.Duration.seconds(60),
     });
   }
 }

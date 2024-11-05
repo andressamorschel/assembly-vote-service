@@ -78,6 +78,8 @@ Get Voting Agenda Result:
 curl --location 'http://Assemb-Assem-cjj7oKOQY8hw-1610945401.us-west-2.elb.amazonaws.com/api/v1/voting/agendas/{{agendaId}}/result'
 ```
 
+If you'd like to run the code locally, you can simply replace the ALB URL with localhost:8080
+
 ## Technical Decisions Explanations:
 
 ### Why Use Another API Instead of the Suggested API?
@@ -107,3 +109,7 @@ Currently, the CDK is the best approach to implement IaC, as I can simply write 
 ### How about the API performance?
 
 I've implemented an auto-scaling rule to increase the number of instances when the current instance reaches 80% usage. This improves scalability and helps ensure the API can handle higher loads effectively.
+
+### Why not write integration test for the rest of the endpoints
+
+I would like! But I didn't have enough time

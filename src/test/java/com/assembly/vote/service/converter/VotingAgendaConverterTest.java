@@ -1,5 +1,6 @@
 package com.assembly.vote.service.converter;
 
+import static java.util.Collections.singletonList;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
@@ -25,6 +26,22 @@ class VotingAgendaConverterTest {
 
         assertThat(result.description()).isEqualTo("agenda description");
         assertThat(result.title()).isEqualTo("agenda title");
+    }
+
+    @Test
+    void shouldBuildVotingAgendaResponseSuccessfully() {
+        var votingAgenda = mock(VotingAgenda.class);
+        var vote = mock(Vote.class);
+        var votingSession = mock(VotingSession.class);
+        given(votingAgenda.description()).willReturn("agenda description");
+        given(votingAgenda.title()).willReturn("agenda title");
+        given(votingAgenda.votes()).willReturn(singletonList(vote));
+
+        var result = votingAgendaConverter.buildVotingAgendaResponse(votingAgenda);
+
+        assertThat(result.description()).isEqualTo("agenda description");
+        assertThat(result.title()).isEqualTo("agenda title");
+        assertThat(result.votingSession()).isEqualTo(votingSession);
     }
 
     @Test

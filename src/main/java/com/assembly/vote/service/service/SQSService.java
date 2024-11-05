@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class SQSService { // TODO: configurar localstack para rodar localmente
+public class SQSService {
 
     private final AmazonSQS sqs;
 

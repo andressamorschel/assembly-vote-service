@@ -6,10 +6,10 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 import com.assembly.vote.service.converter.VoteConverter;
 import com.assembly.vote.service.converter.VotingAgendaConverter;
 import com.assembly.vote.service.converter.VotingSessionConverter;
-import com.assembly.vote.service.domain.VotingAgenda;
 import com.assembly.vote.service.model.request.VoteRequest;
 import com.assembly.vote.service.model.request.VotingAgendaRequest;
 import com.assembly.vote.service.model.request.VotingSessionRequest;
+import com.assembly.vote.service.model.response.VotingAgendaResponse;
 import com.assembly.vote.service.repository.result.VoteCountResult;
 import com.assembly.vote.service.service.VotingAgendaService;
 import com.assembly.vote.service.validator.VoteRequestValidator;
@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -50,17 +51,20 @@ public class VotingAgendaController {
 
     @PostMapping
     @ResponseStatus(CREATED)
-    public VotingAgenda createVotingAgenda(@RequestBody @Valid VotingAgendaRequest votingAgendaRequest) {
+    public VotingAgendaResponse createVotingAgenda(@RequestBody @Valid VotingAgendaRequest votingAgendaRequest) {
         log.info("Creating Voting Agenda: {}", votingAgendaRequest);
 
         var votingAgenda = votingAgendaConverter.buildVotingAgenda(votingAgendaRequest);
 
-        return votingAgendaService.saveVotingAgenda(votingAgenda);
+        var savedVotingAgenda = votingAgendaService.saveVotingAgenda(votingAgenda);
+
+        return votingAgendaConverter.buildVotingAgendaResponse(savedVotingAgenda);
     }
 
     @GetMapping
-    public List<VotingAgenda> listVotingAgendas() {
-        return votingAgendaService.listVotingAgendas();
+    public List<VotingAgendaResponse> listVotingAgendas() {
+        var votingAgendas = votingAgendaService.listVotingAgendas();
+        return votingAgendaConverter.buildVotingAgendaResponse(votingAgendas);
     }
 
     @DeleteMapping("/{votingAgendaId}")
@@ -71,8 +75,8 @@ public class VotingAgendaController {
         votingAgendaService.deleteVotingAgenda(votingAgendaId);
     }
 
-    @PostMapping("/{votingAgendaId}/start/session")
-    public VotingAgenda startVotingSession(@PathVariable String votingAgendaId, @RequestBody @Valid VotingSessionRequest votingSessionRequest) {
+    @PatchMapping("/{votingAgendaId}/start/session")
+    public VotingAgendaResponse startVotingSession(@PathVariable String votingAgendaId, @RequestBody @Valid VotingSessionRequest votingSessionRequest) {
         votingSessionRequestValidator.validadeVotingSessionRequest(votingSessionRequest);
 
         log.info("Creating Voting Session to voting agenda: {}", votingAgendaId);
@@ -83,12 +87,14 @@ public class VotingAgendaController {
 
         var votingAgendaWithSession = votingAgendaConverter.buildVotingAgendaAndSession(votingSession, votingAgenda);
 
-        return votingAgendaService.saveVotingAgenda(votingAgendaWithSession);
+        var updatedVotingAgenda = votingAgendaService.saveVotingAgenda(votingAgendaWithSession);
+
+        return votingAgendaConverter.buildVotingAgendaResponse(updatedVotingAgenda);
     }
 
     @PostMapping("/{votingAgendaId}/member/{memberId}")
     @ResponseStatus(CREATED)
-    public VotingAgenda vote(@PathVariable String votingAgendaId, @PathVariable String memberId, @RequestBody @Valid VoteRequest voteRequest) {
+    public VotingAgendaResponse vote(@PathVariable String votingAgendaId, @PathVariable String memberId, @RequestBody @Valid VoteRequest voteRequest) {
         voteRequestValidator.validateVote(memberId, votingAgendaId);
 
         log.info("Creating vote to voting agenda: {}, member: {}", votingAgendaId, memberId);
@@ -99,7 +105,9 @@ public class VotingAgendaController {
 
         var votingAgendaWithVote = votingAgendaConverter.buildVotingAgendaAndAddVote(vote, votingAgenda);
 
-        return votingAgendaService.saveVotingAgenda(votingAgendaWithVote);
+        var updatedVotingAgenda = votingAgendaService.saveVotingAgenda(votingAgendaWithVote);
+
+        return votingAgendaConverter.buildVotingAgendaResponse(updatedVotingAgenda);
     }
 
     @GetMapping("/{votingAgendaId}/result")

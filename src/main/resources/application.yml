@@ -9,7 +9,7 @@ management:
 cpf:
   validator:
     api:
-      url: https://api.invertexto.com/v1/validator
+      url: https://api.invertexto.com
       token: 16008|9wpw0OYb6Lg9ZybbWlMqy2en33KfWmlS # This should be an environment variable, but for didactic purposes, it will be used like this
 
 aws:

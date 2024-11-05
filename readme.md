@@ -30,13 +30,13 @@ SPRING_PROFILES_ACTIVE=local gradle bootRun
 
 ### Swagger Documentation
 
-[Swagger UI](http://assemb-assem-cjj7okoqy8hw-1610945401.us-west-2.elb.amazonaws.com/swagger-ui/index.html)
+[Swagger UI](http://assemb-assem-l2qpdtnm8yk3-71631766.us-west-2.elb.amazonaws.com/swagger-ui/index.html)
 
 ### Example cURL Commands
 
 Create Member:
 ```bash
-curl --location 'http://Assemb-Assem-cjj7oKOQY8hw-1610945401.us-west-2.elb.amazonaws.com/api/v1/members' \
+curl --location 'http://assemb-assem-l2qpdtnm8yk3-71631766.us-west-2.elb.amazonaws.com/api/v1/members' \
 --header 'Content-Type: application/json' \
 --data '{
     "cpf": "06992525042",
@@ -46,7 +46,7 @@ curl --location 'http://Assemb-Assem-cjj7oKOQY8hw-1610945401.us-west-2.elb.amazo
 
 Create Voting Agenda:
 ```bash
-curl --location 'http://Assemb-Assem-cjj7oKOQY8hw-1610945401.us-west-2.elb.amazonaws.com/api/v1/voting/agendas' \
+curl --location 'http://assemb-assem-l2qpdtnm8yk3-71631766.us-west-2.elb.amazonaws.com/api/v1/voting/agendas' \
 --header 'Content-Type: application/json' \
 --data '{
     "title": "Voting Agenda Title",
@@ -57,7 +57,7 @@ curl --location 'http://Assemb-Assem-cjj7oKOQY8hw-1610945401.us-west-2.elb.amazo
 
 Create Voting Session:
 ```bash
-curl --location --request PATCH 'http://Assemb-Assem-cjj7oKOQY8hw-1610945401.us-west-2.elb.amazonaws.com/api/v1/voting/agendas/{{agendaId}}/start/session' \
+curl --location --request PATCH 'http://assemb-assem-l2qpdtnm8yk3-71631766.us-west-2.elb.amazonaws.com/api/v1/voting/agendas/{{agendaId}}/start/session' \
 --header 'Content-Type: application/json' \
 --data '{
     "start": "05/11/2024 16:30:00"
@@ -66,7 +66,7 @@ curl --location --request PATCH 'http://Assemb-Assem-cjj7oKOQY8hw-1610945401.us-
 
 Create Vote:
 ```bash
-curl --location 'http://Assemb-Assem-cjj7oKOQY8hw-1610945401.us-west-2.elb.amazonaws.com/api/v1/voting/agendas/{{agendaId}}/member/{{memberId}}' \
+curl --location 'http://assemb-assem-l2qpdtnm8yk3-71631766.us-west-2.elb.amazonaws.com/api/v1/voting/agendas/{{agendaId}}/member/{{memberId}}' \
 --header 'Content-Type: application/json' \
 --data '{
     "vote": "NO"
@@ -75,7 +75,7 @@ curl --location 'http://Assemb-Assem-cjj7oKOQY8hw-1610945401.us-west-2.elb.amazo
 
 Get Voting Agenda Result:
 ```bash
-curl --location 'http://Assemb-Assem-cjj7oKOQY8hw-1610945401.us-west-2.elb.amazonaws.com/api/v1/voting/agendas/{{agendaId}}/result'
+curl --location 'http://assemb-assem-l2qpdtnm8yk3-71631766.us-west-2.elb.amazonaws.com/api/v1/voting/agendas/{{agendaId}}/result'
 ```
 
 If you'd like to run the code locally, you can simply replace the ALB URL with localhost:8080

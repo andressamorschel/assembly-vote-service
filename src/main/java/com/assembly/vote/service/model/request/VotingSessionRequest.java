@@ -3,6 +3,7 @@ package com.assembly.vote.service.model.request;
 import static com.fasterxml.jackson.annotation.JsonFormat.Shape.STRING;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import lombok.Getter;
 @Getter
 public class VotingSessionRequest {
 
-    @NotNull(message = "{start_must_not_be_empty}")
+    @NotNull(message = "{start_must_not_be_null}")
     @JsonFormat(shape = STRING, pattern = "dd/MM/yyyy HH:mm:ss")
     private LocalDateTime start;
 

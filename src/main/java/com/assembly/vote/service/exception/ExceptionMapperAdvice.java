@@ -1,9 +1,9 @@
 package com.assembly.vote.service.exception;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Locale;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -43,13 +43,21 @@ public class ExceptionMapperAdvice {
 
     @ExceptionHandler(BadRequestException.class)
     @ResponseStatus(BAD_REQUEST)
-    public ResponseEntity<ErrorResponse> handle(HttpServletRequest request, BadRequestException cause) {
+    public ResponseEntity<ErrorResponse> handle(BadRequestException cause) {
         var errorMessage = getMessage(cause.getError());
 
         var errorResponse = new ErrorResponse(BAD_REQUEST.value(), errorMessage);
 
         return new ResponseEntity<>(errorResponse, BAD_REQUEST);
     }
+
+    @ExceptionHandler(InternalServerErrorException.class)
+    @ResponseStatus(INTERNAL_SERVER_ERROR)
+    public ResponseEntity<ErrorResponse> handle(InternalServerErrorException cause) {
+        var errorResponse = new ErrorResponse(INTERNAL_SERVER_ERROR.value(), cause.getMessage());
+        return new ResponseEntity<>(errorResponse, INTERNAL_SERVER_ERROR);
+    }
+
 
     private String getMessage(ErrorMessage error) {
         return messageSource.getMessage(error.getMessageKey(), error.getArguments().toArray(new String[0]), Locale.getDefault());

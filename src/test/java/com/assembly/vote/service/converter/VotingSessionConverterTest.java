@@ -14,31 +14,27 @@ class VotingSessionConverterTest {
 
     @Test
     void shouldBuildVotingSessionSuccessfully() {
-        var votingAgendaId = "voting-agenda-id";
         var tomorrow = now().plusDays(1);
         var start = now();
         var votingSessionRequest = mock(VotingSessionRequest.class);
         given(votingSessionRequest.getStart()).willReturn(start);
         given(votingSessionRequest.getEnd()).willReturn(tomorrow);
 
-        var result = votingSessionConverter.buildVotingSession(votingSessionRequest, votingAgendaId);
+        var result = votingSessionConverter.buildVotingSession(votingSessionRequest);
 
-        assertThat(result.votingAgendaId()).isEqualTo(votingAgendaId);
         assertThat(result.end()).isEqualTo(tomorrow);
         assertThat(result.start()).isEqualTo(start);
     }
 
     @Test
     void shouldBuildVotingSessionSuccessfullyWhenEndIsNull() {
-        var votingAgendaId = "voting-agenda-id";
         var votingEnd = now().plusMinutes(1);
         var start = now();
         var votingSessionRequest = mock(VotingSessionRequest.class);
         given(votingSessionRequest.getStart()).willReturn(start);
 
-        var result = votingSessionConverter.buildVotingSession(votingSessionRequest, votingAgendaId);
+        var result = votingSessionConverter.buildVotingSession(votingSessionRequest);
 
-        assertThat(result.votingAgendaId()).isEqualTo(votingAgendaId);
         assertThat(result.end()).isEqualToIgnoringNanos(votingEnd);
         assertThat(result.start()).isEqualTo(start);
     }

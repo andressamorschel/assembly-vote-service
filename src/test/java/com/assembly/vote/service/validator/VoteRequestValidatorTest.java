@@ -7,7 +7,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 import com.assembly.vote.service.exception.BadRequestException;
 import com.assembly.vote.service.service.MemberService;
-import com.assembly.vote.service.service.VoteService;
+import com.assembly.vote.service.service.VotingAgendaService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +21,7 @@ class VoteRequestValidatorTest {
     private MemberService memberService;
 
     @Mock
-    private VoteService voteService;
+    private VotingAgendaService votingAgendaService;
 
     @InjectMocks
     private VoteRequestValidator voteRequestValidator;
@@ -29,39 +29,39 @@ class VoteRequestValidatorTest {
     @Test
     void shouldValidateVoteSuccessfully() {
         var memberId = "member-id";
-        var votingSessionId = "vote-session-id";
+        var votingAgendaId = "vote-agenda-id";
 
-        assertThatCode(() -> voteRequestValidator.validateVote(memberId, votingSessionId))
+        assertThatCode(() -> voteRequestValidator.validateVote(memberId, votingAgendaId))
                 .doesNotThrowAnyException();
 
         verify(memberService).cannotVote(memberId);
-        verify(voteService).memberAlreadyVotedOnSession(votingSessionId, memberId);
+        verify(votingAgendaService).memberHasVoted(votingAgendaId, memberId);
     }
 
     @Test
     void shouldValidateVoteThrowsBadRequestExceptionWhenMemberCannotVote() {
         var memberId = "member-id";
-        var votingSessionId = "vote-session-id";
+        var votingAgendaId = "vote-agenda-id";
         given(memberService.cannotVote(memberId)).willReturn(true);
 
-        assertThatCode(() -> voteRequestValidator.validateVote(memberId, votingSessionId))
+        assertThatCode(() -> voteRequestValidator.validateVote(memberId, votingAgendaId))
                 .isInstanceOf(BadRequestException.class);
 
         verify(memberService).cannotVote(memberId);
-        verifyNoInteractions(voteService);
+        verifyNoInteractions(votingAgendaService);
     }
 
 
     @Test
     void shouldValidateVoteThrowsBadRequestExceptionWhenMemberAlreadyVoted() {
         var memberId = "member-id";
-        var votingSessionId = "vote-session-id";
-        given(voteService.memberAlreadyVotedOnSession(votingSessionId, memberId)).willReturn(true);
+        var votingAgendaId = "vote-agenda-id";
+        given(votingAgendaService.memberHasVoted(votingAgendaId, memberId)).willReturn(true);
 
-        assertThatCode(() -> voteRequestValidator.validateVote(memberId, votingSessionId))
+        assertThatCode(() -> voteRequestValidator.validateVote(memberId, votingAgendaId))
                 .isInstanceOf(BadRequestException.class);
 
         verify(memberService).cannotVote(memberId);
-        verify(voteService).memberAlreadyVotedOnSession(votingSessionId, memberId);
+        verify(votingAgendaService).memberHasVoted(votingAgendaId, memberId);
     }
 }

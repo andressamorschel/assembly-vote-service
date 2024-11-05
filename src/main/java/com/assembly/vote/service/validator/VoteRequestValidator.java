@@ -4,7 +4,7 @@ import static com.assembly.vote.service.exception.ErrorMessage.error;
 
 import com.assembly.vote.service.exception.BadRequestException;
 import com.assembly.vote.service.service.MemberService;
-import com.assembly.vote.service.service.VoteService;
+import com.assembly.vote.service.service.VotingAgendaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -12,16 +12,16 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class VoteRequestValidator {
 
-    private final VoteService voteService;
+    private final VotingAgendaService votingAgendaService;
 
     private final MemberService memberService;
 
-    public void validateVote(String memberId, String votingSessionId) {
+    public void validateVote(String memberId, String votingAgendaId) {
         if (memberService.cannotVote(memberId)) {
             throw new BadRequestException(error("not_allowed_to_vote"));
         }
 
-        if (voteService.memberAlreadyVotedOnSession(votingSessionId, memberId)) {
+        if (votingAgendaService.memberHasVoted(votingAgendaId, memberId)) {
             throw new BadRequestException(error("member_already_voted_in_session"));
         }
     }

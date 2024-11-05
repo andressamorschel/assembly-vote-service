@@ -12,3 +12,14 @@ cpf:
     api:
       url: https://api.invertexto.com
       token: 16008|9wpw0OYb6Lg9ZybbWlMqy2en33KfWmlS
+aws:
+  region: us-west-2
+  access:
+    key:
+      id: awsId
+  secret:
+    access:
+      key: aws_key
+
+vote:
+  queue: https://sqs.us-west-2.amazonaws.com/010526268990/AssemblyVoteQueue

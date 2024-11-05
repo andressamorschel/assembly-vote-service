@@ -10,4 +10,7 @@ cpf:
   validator:
     api:
       url: https://api.invertexto.com/v1/validator
-      token: 16008|9wpw0OYb6Lg9ZybbWlMqy2en33KfWmlS #This should be an environment variable, but for didactic purposes, it will be used like this
+      token: 16008|9wpw0OYb6Lg9ZybbWlMqy2en33KfWmlS # This should be an environment variable, but for didactic purposes, it will be used like this
+
+aws:
+  region: us-west-2

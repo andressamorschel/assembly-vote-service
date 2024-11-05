@@ -12,12 +12,10 @@ class VoteConverterTest {
     @Test
     void shouldBuildVoteSuccessfully() {
         var memberId = "member-id";
-        var votingSessionId = "voting-session-id";
 
-        var result = voteConverter.buildVote(memberId, votingSessionId, NO);
+        var result = voteConverter.buildVote(memberId, NO);
 
         assertThat(result.memberId()).isEqualTo(memberId);
-        assertThat(result.votingSessionId()).isEqualTo(votingSessionId);
         assertThat(result.vote()).isEqualTo(NO);
     }
 }

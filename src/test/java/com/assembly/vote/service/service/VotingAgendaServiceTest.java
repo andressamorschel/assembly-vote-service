@@ -7,7 +7,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 import com.assembly.vote.service.domain.VotingAgenda;
+import com.assembly.vote.service.repository.VotingAgendaQueryRepository;
 import com.assembly.vote.service.repository.VotingAgendaRepository;
+import com.assembly.vote.service.repository.result.VotingResult;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,8 +22,31 @@ class VotingAgendaServiceTest {
     @Mock
     private VotingAgendaRepository votingAgendaRepository;
 
+    @Mock
+    private VotingAgendaQueryRepository votingAgendaQueryRepository;
+
     @InjectMocks
     private VotingAgendaService votingAgendaService;
+
+    @Test
+    void shouldMarkAsNotificationSentSuccessfully() {
+        var ids = singletonList("agenda-id");
+
+        votingAgendaService.markAsNotificationSent(ids);
+
+        verify(votingAgendaQueryRepository).markVotingAgendasAsNotified(ids);
+    }
+
+    @Test
+    void shouldFindExpiredSessionsSuccessfully() {
+        var votingResult = mock(VotingResult.class);
+        given(votingAgendaQueryRepository.getExpiredSessionsResult()).willReturn(singletonList(votingResult));
+
+        var result = votingAgendaService.findExpiredSessions();
+
+        assertThat(result).isNotEmpty();
+        verify(votingAgendaQueryRepository).getExpiredSessionsResult();
+    }
 
     @Test
     void shouldSaveVotingAgendaSuccessfully() {

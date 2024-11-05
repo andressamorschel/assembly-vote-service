@@ -11,9 +11,8 @@ public class VotingSessionConverter {
 
     private static final long DEFAULT_VOTING_AGENDA_DURATION = 1;
 
-    public VotingSession buildVotingSession(VotingSessionRequest votingSessionRequest, String votingAgendaId) {
+    public VotingSession buildVotingSession(VotingSessionRequest votingSessionRequest) {
         return VotingSession.builder()
-                .votingAgendaId(votingAgendaId)
                 .start(votingSessionRequest.getStart())
                 .end(getVotingEnd(votingSessionRequest))
                 .build();

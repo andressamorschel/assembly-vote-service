@@ -52,6 +52,18 @@ export class AssemblyVoteServiceStack extends cdk.Stack {
       resources: [queue.queueArn]
     }));
 
+    queue.addToResourcePolicy(new iam.PolicyStatement({
+      effect: iam.Effect.ALLOW,
+      principals: [new iam.ArnPrincipal(taskDefinition.taskRole.roleArn)],
+      actions: ["sqs:SendMessage"],
+      resources: [queue.queueArn]
+    }));    
+
+    taskDefinition.taskRole.addToPrincipalPolicy(new iam.PolicyStatement({
+      actions: ["ssm:GetParameter", "ssm:GetParametersByPath"],
+      resources: [`arn:aws:ssm:${cdk.Stack.of(this).region}:${cdk.Stack.of(this).account}:parameter/config/AssemblyVoteService/*`]
+    }));
+
     new ecs_patterns.ApplicationLoadBalancedFargateService(this, 'AssemblyVoteFargateService', {
       serviceName: 'AssembyVoteService',
       cluster: cluster,
